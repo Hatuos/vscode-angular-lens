@@ -1,0 +1,53 @@
+{
+  "name": "angular-lens",
+  "displayName": "Angular Lens",
+  "publisher": "Hatuos",
+  "description": "A lightweight way for staying up to date with Angular releases",
+  "keywords": ["angular", "releases", "frontend"],
+  "version": "0.0.1",
+  "icon": "media/wizard128.png",
+  "scripts": {
+    "compile": "tsc -p ./"
+  },
+  "main": "./out/extension.js",
+  "activationEvents": [
+    "onStartupFinished"
+  ],
+  "engines": {
+    "vscode": "^1.90.0"
+  },
+  "contributes": {
+    "commands": [
+      {
+        "command": "angularLens.openReleases",
+        "title": "Angular Lens: Open Releases"
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "angularLens",
+          "title": "Angular Lens",
+          "icon": "media/angular-lens.svg"
+        }
+      ]
+    },
+    "views": {
+      "angularLens": [
+        {
+          "id": "angularLens.releases",
+          "name": "Releases",
+          "icon": "media/angular-lens.svg",
+          "type": "webview"
+        }
+      ]
+    }
+  },
+  "devDependencies": {
+    "@types/node": "22.15.0",
+    "@types/vscode": "^1.90.0",
+    "@vscode/vsce": "3.9.2",
+    "typescript": "5.9.2"
+  },
+  "packageManager": "pnpm@11.5.0"
+}

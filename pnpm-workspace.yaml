@@ -1,0 +1,34 @@
+packages:
+  - .
+
+# =========================
+# Security & supply chain
+# =========================
+
+# Prevents execution of lifecycle scripts (preinstall, postinstall, etc.)
+ignoreScripts: true
+# Rejects packages incompatible with the current Node.js/npm version
+engineStrict: true
+# Prevents installation of dependencies from Git repositories
+blockExoticSubdeps: true
+# Enforces strict validation of dependency build steps
+strictDepBuilds: true
+# Verifies dependency integrity and policy compliance before installation
+verifyDepsBeforeRun: install
+
+# =========================
+# Version stability & freshness control
+# =========================
+
+# Prevents installing packages that are too recently published (cooldown period in minutes)
+# 43200 = 30 days
+minimumReleaseAge: 43200
+# Fails installation if a package does not meet the minimum age requirement
+minimumReleaseAgeStrict: true
+
+# =========================
+# Performance & reproducibility
+# =========================
+
+# Reuses previously validated dependency state to speed up repeated installs
+optimisticRepeatInstall: true
