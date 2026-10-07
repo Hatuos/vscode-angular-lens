@@ -110,28 +110,40 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 		}
 		.toolbar {
 			display: flex;
-			justify-content: space-between;
+			justify-content: flex-start;
 			align-items: center;
-			font-weight: 600;
 			padding: 0 0 10px;
 			border-bottom: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
 			margin-bottom: 8px;
 		}
 		button {
-			padding: 4px 8px;
-			border: 1px solid var(--vscode-button-border, transparent);
-			border-radius: 2px;
+			padding: 6px 12px;
+			border: 1px solid var(--vscode-button-border, rgba(255,255,255,0.12));
+			border-radius: 4px;
 			background: var(--vscode-button-background);
 			color: var(--vscode-button-foreground);
 			font: inherit;
+			font-weight: 600;
 			cursor: pointer;
+			transition: background-color 160ms ease, border-color 160ms ease, box-shadow 160ms ease, transform 120ms ease;
 		}
 		button:hover {
 			background: var(--vscode-button-hoverBackground);
+			border-color: var(--vscode-focusBorder, var(--vscode-button-border, transparent));
+			box-shadow: 0 2px 8px rgba(0,0,0,0.18);
+		}
+		button:active:not(:disabled) {
+			transform: translateY(1px);
+			box-shadow: none;
+		}
+		button:focus-visible {
+			outline: 2px solid var(--vscode-focusBorder, #3794ff);
+			outline-offset: 2px;
 		}
 		button:disabled {
 			cursor: default;
 			opacity: 0.7;
+			box-shadow: none;
 		}
 		.major {
 			margin: 8px 0;
@@ -147,16 +159,50 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 		.major > summary::-webkit-details-marker {
 			display: none;
 		}
+		.major > summary::after {
+			content: "";
+			position: absolute;
+			right: 3px;
+			top: 4px;
+			width: 7px;
+			height: 7px;
+			border-right: 1.5px solid currentColor;
+			border-bottom: 1.5px solid currentColor;
+			opacity: 0.7;
+			transform: rotate(45deg);
+			transition: transform 200ms ease;
+		}
+		.major[open] > summary::after {
+			transform: rotate(225deg);
+		}
 		.major-title {
 			display: inline-flex;
 			align-items: center;
 			gap: 8px;
 		}
 		.major-body {
+			display: grid;
+			grid-template-rows: 0fr;
 			position: relative;
-			margin-top: 10px;
+			margin-top: 0;
 			padding-left: 12px;
 			border-left: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
+			opacity: 0;
+			transform: translateY(-4px);
+			transition: grid-template-rows 220ms ease, margin-top 220ms ease, opacity 180ms ease, transform 220ms ease;
+		}
+		.major:not([open]) > .major-body {
+			display: grid;
+		}
+		.major[open] > .major-body {
+			grid-template-rows: 1fr;
+			margin-top: 10px;
+			opacity: 1;
+			transform: translateY(0);
+		}
+		.major-body > section {
+			min-height: 0;
+			overflow: hidden;
 		}
 		.major-body::before {
 			content: "";
@@ -394,6 +440,13 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 		}
 		.status {
 			color: var(--vscode-descriptionForeground, #8b949e);
+		}
+		@media (prefers-reduced-motion: reduce) {
+			.major > summary::after,
+			.major-body,
+			button {
+				transition: none;
+			}
 		}
 	</style>
 </head>
