@@ -113,7 +113,6 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			justify-content: flex-start;
 			align-items: center;
 			padding: 0 0 10px;
-			border-bottom: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
 			margin-bottom: 8px;
 		}
 		button {
@@ -181,21 +180,19 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			gap: 8px;
 		}
 		.major-body {
-			display: grid;
-			grid-template-rows: 0fr;
 			position: relative;
 			margin-top: 0;
 			padding-left: 12px;
 			border-left: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
+			overflow: hidden;
+			height: 0;
 			opacity: 0;
 			transform: translateY(-4px);
-			transition: grid-template-rows 220ms ease, margin-top 220ms ease, opacity 180ms ease, transform 220ms ease;
 		}
 		.major:not([open]) > .major-body {
-			display: grid;
+			display: block;
 		}
 		.major[open] > .major-body {
-			grid-template-rows: 1fr;
 			margin-top: 10px;
 			opacity: 1;
 			transform: translateY(0);
@@ -220,17 +217,22 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			margin-right: 8px;
 			border-radius: 50%;
 			vertical-align: middle;
+			box-shadow: 0 0 4px 1px var(--indicator-glow);
 		}
 		.support-indicator-green {
+			--indicator-glow: rgba(63,185,80,0.4);
 			background: #3fb950;
 		}
 		.support-indicator-yellow {
+			--indicator-glow: rgba(210,153,34,0.4);
 			background: #d29922;
 		}
 		.support-indicator-red {
+			--indicator-glow: rgba(248,81,73,0.4);
 			background: #f85149;
 		}
 		.support-indicator-unknown {
+			--indicator-glow: rgba(139,148,158,0.35);
 			background: var(--vscode-descriptionForeground, #8b949e);
 		}
 		.support-info {
@@ -257,17 +259,22 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			height: 8px;
 			border-radius: 50%;
 			flex-shrink: 0;
+			box-shadow: 0 0 4px 1px var(--indicator-glow);
 		}
 		.support-dot-green {
+			--indicator-glow: rgba(63,185,80,0.4);
 			background: #3fb950;
 		}
 		.support-dot-yellow {
+			--indicator-glow: rgba(210,153,34,0.4);
 			background: #d29922;
 		}
 		.support-dot-red {
+			--indicator-glow: rgba(248,81,73,0.4);
 			background: #f85149;
 		}
 		.support-dot-unknown {
+			--indicator-glow: rgba(139,148,158,0.35);
 			background: var(--vscode-descriptionForeground, #8b949e);
 		}
 		.support-grid {
@@ -460,6 +467,62 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 		const refreshButton = document.getElementById("refresh");
 		if (refreshButton) {
 			refreshButton.addEventListener("click", () => vscode.postMessage({ type: "refresh" }));
+		}
+
+		const panelAnimations = new WeakMap();
+		const panelOpenStates = new WeakMap();
+		const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
+		for (const panel of document.querySelectorAll(".major")) {
+			panelOpenStates.set(panel, panel.open);
+			const summary = panel.querySelector("summary");
+			if (!summary) continue;
+			summary.addEventListener("click", (event) => {
+				event.preventDefault();
+				const body = panel.querySelector(".major-body");
+				if (!body) return;
+
+				const opening = !panelOpenStates.get(panel);
+				panelOpenStates.set(panel, opening);
+				const currentStyles = window.getComputedStyle(body);
+				const currentHeight = body.getBoundingClientRect().height;
+				const currentOpacity = currentStyles.opacity;
+				const currentTransform = currentStyles.transform;
+				const currentMarginTop = currentStyles.marginTop;
+				panelAnimations.get(body)?.cancel();
+				body.style.height = currentHeight + "px";
+				body.style.opacity = currentOpacity;
+				body.style.transform = currentTransform;
+				body.style.marginTop = currentMarginTop;
+				if (opening) panel.open = true;
+
+				if (reducedMotion.matches) {
+					body.style.height = opening ? "auto" : "0px";
+					body.style.opacity = "";
+					body.style.transform = "";
+					body.style.marginTop = "";
+					panel.open = opening;
+					return;
+				}
+
+				const targetHeight = opening ? body.scrollHeight : 0;
+				const animation = body.animate(
+					[
+						{ height: currentHeight + "px", opacity: currentOpacity, transform: currentTransform, marginTop: currentMarginTop },
+						{ height: targetHeight + "px", opacity: opening ? 1 : 0, transform: opening ? "translateY(0)" : "translateY(-4px)", marginTop: opening ? "10px" : "0px" }
+					],
+					{ duration: 280, easing: "cubic-bezier(0.2, 0, 0, 1)" }
+				);
+				panelAnimations.set(body, animation);
+				animation.onfinish = () => {
+					if (panelAnimations.get(body) !== animation) return;
+					body.style.height = opening ? "auto" : "0px";
+					body.style.opacity = "";
+					body.style.transform = "";
+					body.style.marginTop = "";
+					if (!opening) panel.open = false;
+					panelAnimations.delete(body);
+				};
+			});
 		}
 	</script>
 </body>

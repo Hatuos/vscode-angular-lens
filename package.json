@@ -3,6 +3,10 @@
   "displayName": "Angular Lens",
   "publisher": "Hatuos",
   "description": "A lightweight way for staying up to date with Angular releases",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Hatuos/vscode-angularlens.git"
+  },
   "keywords": ["angular", "releases", "frontend"],
   "version": "0.0.1",
   "icon": "media/wizard128.png",
