@@ -96,7 +96,15 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 	<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; script-src 'nonce-${nonce}';">
 	<style>
 		:root {
+			color-scheme: light;
+		}
+		body.vscode-dark,
+		body.vscode-high-contrast {
 			color-scheme: dark;
+		}
+		body.vscode-light,
+		body.vscode-high-contrast-light {
+			color-scheme: light;
 		}
 		body {
 			margin: 0;
@@ -387,7 +395,7 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			padding: 8px 0;
 			border: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
 			border-radius: 6px;
-			background: rgba(255,255,255,0.02);
+			background: var(--vscode-editorWidget-background, var(--vscode-sideBar-background, #1f1f1f));
 			padding-left: 10px;
 			padding-right: 10px;
 		}
@@ -426,7 +434,7 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			white-space: nowrap;
 			padding: 2px 8px;
 			border-radius: 999px;
-			background: rgba(255,255,255,0.05);
+			background: var(--vscode-editorWidget-background, var(--vscode-sideBar-background, #1f1f1f));
 			border: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
 		}
 		.notes-link-row {
