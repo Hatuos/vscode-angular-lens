@@ -26,6 +26,10 @@
 
 Angular Lens is a lightweight VS Code extension for checking stable Angular releases without leaving your editor. It groups versions by supported major and minor release, and links each version to its official GitHub release page.
 
+<p align="center">
+	<img src="media/pluginPreview.png" alt="Angular Lens release list showing Angular versions and support timelines">
+</p>
+
 ## Features
 
 - Browse stable releases across supported Angular major versions.
