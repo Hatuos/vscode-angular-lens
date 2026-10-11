@@ -1,14 +1,14 @@
 {
-  "name": "angular-lens",
-  "displayName": "Angular Lens",
+  "name": "angular-radar",
+  "displayName": "Angular Radar",
   "publisher": "Hatuos",
   "description": "A lightweight way for staying up to date with Angular releases",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Hatuos/vscode-angularlens.git"
+    "url": "https://github.com/Hatuos/vscode-angular-radar.git"
   },
   "keywords": ["angular", "releases", "frontend"],
-  "version": "0.0.1",
+  "version": "0.1.0",
   "icon": "media/wizard128.png",
   "scripts": {
     "compile": "tsc -p ./"
@@ -23,25 +23,25 @@
   "contributes": {
     "commands": [
       {
-        "command": "angularLens.openReleases",
-        "title": "Angular Lens: Open Releases"
+        "command": "angularRadar.openReleases",
+        "title": "Angular Radar: Open Releases"
       }
     ],
     "viewsContainers": {
       "activitybar": [
         {
-          "id": "angularLens",
-          "title": "Angular Lens",
-          "icon": "media/angular-lens.svg"
+          "id": "angularRadar",
+          "title": "Angular Radar",
+          "icon": "media/angular-radar.svg"
         }
       ]
     },
     "views": {
-      "angularLens": [
+      "angularRadar": [
         {
-          "id": "angularLens.releases",
+          "id": "angularRadar.releases",
           "name": "Releases",
-          "icon": "media/angular-lens.svg",
+          "icon": "media/angular-radar.svg",
           "type": "webview"
         }
       ]

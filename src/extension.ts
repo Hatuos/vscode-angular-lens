@@ -23,8 +23,8 @@ export function activate(context: vscode.ExtensionContext): void {
 		() => pageHtml
 	);
 	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider("angularLens.releases", releasesViewProvider),
-		vscode.commands.registerCommand("angularLens.openReleases", openReleasesTab)
+		vscode.window.registerWebviewViewProvider("angularRadar.releases", releasesViewProvider),
+		vscode.commands.registerCommand("angularRadar.openReleases", openReleasesTab)
 	);
 }
 
@@ -35,8 +35,8 @@ function openReleasesTab(): void {
 	}
 
 	const panel = vscode.window.createWebviewPanel(
-		"angularLens.releasesEditor",
-		"Angular Lens: Releases",
+		"angularRadar.releasesEditor",
+		"Angular Radar: Releases",
 		vscode.ViewColumn.One,
 		{ enableScripts: true }
 	);

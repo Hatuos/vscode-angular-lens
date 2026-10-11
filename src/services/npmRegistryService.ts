@@ -20,7 +20,7 @@ export async function fetchAngularCorePackage(): Promise<NpmRegistryCorePackage>
 		headers: {
 			Accept: "application/json",
 			"Accept-Encoding": "gzip",
-			"User-Agent": "AngularLens-VSCode-Extension"
+			"User-Agent": "AngularRadar-VSCode-Extension"
 		},
 		maxResponseBytes: 8 * 1024 * 1024,
 		decompressGzip: true

@@ -7,7 +7,7 @@ export const angularSupportPolicyUrl = "https://angular.dev/reference/releases#a
 
 export async function fetchAngularSupportInfo(): Promise<Map<number, AngularSupportInfo>> {
 	const response = await fetchHttpsText(angularSupportSourceUrl, {
-		headers: { "User-Agent": "AngularLens-VSCode-Extension" },
+		headers: { "User-Agent": "AngularRadar-VSCode-Extension" },
 		maxResponseBytes: 160 * 1024
 	});
 	if (response.statusCode !== 200) {
