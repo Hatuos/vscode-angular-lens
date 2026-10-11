@@ -450,8 +450,82 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 		.notes-link:hover {
 			text-decoration: underline;
 		}
-		.error {
+		.error-panel {
+			margin: 12px 0;
+			padding: 12px;
+			border: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
+			border-left: 3px solid var(--vscode-errorForeground, #f85149);
+			border-radius: 4px;
+		}
+		.error-title {
+			margin: 0 0 8px;
 			color: var(--vscode-errorForeground, #f85149);
+			font-size: 1em;
+		}
+		.error-cause,
+		.error-support-link {
+			margin: 6px 0 0;
+			line-height: 1.45;
+		}
+		.error-diagnostic {
+			margin-top: 10px;
+			color: var(--vscode-descriptionForeground, #8b949e);
+			font-size: 0.9em;
+		}
+		.error-diagnostic summary {
+			cursor: pointer;
+		}
+		.error-diagnostic code {
+			display: block;
+			margin-top: 6px;
+			overflow-wrap: anywhere;
+		}
+		.resource-links {
+			margin-top: 16px;
+			padding-top: 12px;
+			border-top: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
+		}
+		.resource-links h2 {
+			margin: 0 0 8px;
+			font-size: 0.95em;
+		}
+		.resource-links table {
+			width: 100%;
+			border-collapse: collapse;
+			table-layout: fixed;
+		}
+		.resource-links th,
+		.resource-links td {
+			padding: 9px 8px 9px 0;
+			text-align: left;
+			vertical-align: top;
+			font-weight: 400;
+			border-bottom: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.08));
+		}
+		.resource-links th {
+			width: 44%;
+		}
+		.resource-links tr:last-child th,
+		.resource-links tr:last-child td {
+			border-bottom: 0;
+		}
+		.resource-links a {
+			display: block;
+			font-weight: 600;
+			font-size: 0.95em;
+			line-height: 1.35;
+		}
+		.resource-links a:hover {
+			text-decoration: underline;
+		}
+		.resource-links a:focus-visible {
+			outline: 2px solid var(--vscode-focusBorder, #3794ff);
+			outline-offset: 2px;
+		}
+		.resource-links td {
+			color: var(--vscode-descriptionForeground, #8b949e);
+			font-size: 0.9em;
+			line-height: 1.4;
 		}
 		.status {
 			color: var(--vscode-descriptionForeground, #8b949e);
@@ -469,6 +543,17 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 	<div class="panel">
 		<div class="toolbar">${refreshButtonHtml}</div>
 		${content}
+		<footer class="resource-links" aria-label="Angular resources">
+			<h2>Angular resources</h2>
+			<table>
+				<tbody>
+					<tr><th scope="row"><a href="https://angular.dev/" target="_blank" rel="noreferrer">Official Angular website</a></th><td>Documentation, tutorials, and Angular resources</td></tr>
+					<tr><th scope="row"><a href="https://angular.dev/reference/releases" target="_blank" rel="noreferrer">Versioning and support guide</a></th><td>Release schedule and support policy</td></tr>
+					<tr><th scope="row"><a href="https://angular.dev/reference/versions" target="_blank" rel="noreferrer">Angular compatibility guide</a></th><td>Compatibility with Node.js, TypeScript, and RxJS</td></tr>
+					<tr><th scope="row"><a href="https://github.com/angular/angular" target="_blank" rel="noreferrer">Angular GitHub repository</a></th><td>Source code, issues, and contributions</td></tr>
+				</tbody>
+			</table>
+		</footer>
 	</div>
 	<script nonce="${nonce}">
 		const vscode = acquireVsCodeApi();

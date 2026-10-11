@@ -1,37 +1,33 @@
-import * as https from "https";
 import type { AngularSupportInfo } from "../models/angularSupportInfo";
 import { addCalendarMonths, parseSupportEndDate } from "../utils/date";
+import { fetchHttpsText } from "./httpsTextService";
 
 const angularSupportSourceUrl = "https://raw.githubusercontent.com/angular/angular/main/adev/src/content/reference/releases.md";
 export const angularSupportPolicyUrl = "https://angular.dev/reference/releases#actively-supported-versions";
 
-export function fetchAngularSupportInfo(): Promise<Map<number, AngularSupportInfo>> {
-	return new Promise((resolve, reject) => {
-		const request = https.get(angularSupportSourceUrl, {
-			headers: { "User-Agent": "AngularLens-VSCode-Extension" }
-		}, (response) => {
-			let body = "";
-			response.setEncoding("utf8");
-			response.on("data", (chunk: string) => { body += chunk; });
-			response.on("end", () => {
-				if (response.statusCode !== 200) {
-					reject(new Error(`Angular returned HTTP ${response.statusCode ?? "unknown"}`));
-					return;
-				}
-
-				try {
-					resolve(parseAngularSupportInfo(body));
-				} catch (error: unknown) {
-					reject(error);
-				}
-			});
-		});
-
-		request.setTimeout(15000, () => request.destroy(new Error("Timed out while contacting Angular")));
-		request.on("error", reject);
+export async function fetchAngularSupportInfo(): Promise<Map<number, AngularSupportInfo>> {
+	const response = await fetchHttpsText(angularSupportSourceUrl, {
+		headers: { "User-Agent": "AngularLens-VSCode-Extension" },
+		maxResponseBytes: 160 * 1024
 	});
+	if (response.statusCode !== 200) {
+		throw new Error(`Angular returned HTTP ${response.statusCode ?? "unknown"}`);
+	}
+	return parseAngularSupportInfo(response.body);
 }
 
+/**
+ * Parses the Angular support policy table from the upstream markdown source and
+ * extracts each major version's support status and end dates.
+ *
+ * The input is expected to contain the "### Actively supported versions" section.
+ * The function scans the table rows, keeps only entries matching the supported
+ * version pattern (for example `^v18.0.0`), and returns a map keyed by major version.
+ *
+ * @param markdown - The raw markdown content from Angular's releases page.
+ * @returns A map of major version numbers to their support metadata.
+ * @throws Error when the target section or the expected table format cannot be found.
+ */
 export function parseAngularSupportInfo(markdown: string): Map<number, AngularSupportInfo> {
 	const heading = "### Actively supported versions";
 	const sectionStart = markdown.indexOf(heading);
@@ -64,6 +60,17 @@ export function parseAngularSupportInfo(markdown: string): Map<number, AngularSu
 	return supportInfo;
 }
 
+/**
+ * Evaluates how much support remains for a given Angular major version.
+ *
+ * It checks the parsed support metadata for the requested major version and returns
+ * a status label with a severity level. The result is based on the remaining time
+ * until the support end date and uses thresholds of one month and six months.
+ *
+ * @param major - The Angular major version to evaluate.
+ * @param supportInfo - The parsed support metadata map, if available.
+ * @returns An object containing the support level and a human-readable label.
+ */
 export function getSupportIndicator(major: number, supportInfo?: Map<number, AngularSupportInfo>): { level: string; label: string } {
 	if (!supportInfo) {
 		return { level: "unknown", label: "Support information unavailable" };

@@ -1,5 +1,5 @@
 <p align="center">
-	<img src="media/wzang-256.png" width="220" alt="A wizard holding an Angular Lens emblem">
+	<img src="https://raw.githubusercontent.com/Hatuos/vscode-angularlens/main/media/wzang-256.png" width="220" alt="A wizard holding an Angular Lens emblem">
 </p>
 
 <h1 align="center">Angular Lens</h1>
@@ -27,7 +27,7 @@
 Angular Lens is a lightweight VS Code extension for checking stable Angular releases without leaving your editor. It groups versions by supported major and minor release, and links each version to its official GitHub release page.
 
 <p align="center">
-	<img src="media/pluginPreview.png" alt="Angular Lens release list showing Angular versions and support timelines">
+	<img src="https://raw.githubusercontent.com/Hatuos/vscode-angularlens/main/media/pluginPreview.png" alt="Angular Lens release list">
 </p>
 
 ## Features
