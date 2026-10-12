@@ -15,6 +15,8 @@ export class RemoteResponseError extends Error {
 export interface HttpsTextResponse {
 	statusCode?: number;
 	body: string;
+	etag?: string;
+	lastModified?: string;
 }
 
 export interface HttpsTextOptions {
@@ -75,9 +77,24 @@ export function fetchHttpsText(url: string, options: HttpsTextOptions): Promise<
 				fail(new RemoteResponseError("Remote response was interrupted", "RESPONSE_INTERRUPTED"));
 			});
 
+			if (response.statusCode === 304) {
+				complete({
+					statusCode: 304,
+					body: "",
+					etag: response.headers.etag,
+					lastModified: response.headers["last-modified"]
+				});
+				response.destroy();
+				return;
+			}
 			if (response.statusCode !== 200) {
 				const statusCode = response.statusCode;
-				complete({ statusCode, body: "" });
+				complete({
+					statusCode,
+					body: "",
+					etag: response.headers.etag,
+					lastModified: response.headers["last-modified"]
+				});
 				response.destroy();
 				return;
 			}
@@ -102,7 +119,12 @@ export function fetchHttpsText(url: string, options: HttpsTextOptions): Promise<
 					fail(new RemoteResponseError("Remote response ended before the download was complete", "RESPONSE_INTERRUPTED"));
 					return;
 				}
-				complete({ statusCode: response.statusCode, body });
+				complete({
+					statusCode: response.statusCode,
+					body,
+					etag: response.headers.etag,
+					lastModified: response.headers["last-modified"]
+				});
 			});
 		});
 

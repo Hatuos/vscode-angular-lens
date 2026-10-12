@@ -2,9 +2,6 @@ import * as vscode from "vscode";
 import { AngularReleasesViewProvider, isRefreshMessage } from "./providers/angularReleasesViewProvider";
 import { angularSupportPolicyUrl, fetchAngularSupportInfo } from "./services/angularSupportPolicyService";
 import { fetchSupportedAngularReleases } from "./services/angularReleasesService";
-import { requestPerformanceService } from "./services/requestPerformanceService";
-import type { AngularRelease } from "./models/angularRelease";
-import type { AngularSupportInfo } from "./models/angularSupportInfo";
 import { renderPage, renderReleaseList } from "./webview/releasePage";
 import { escapeHtml } from "./utils/html";
 
@@ -12,12 +9,12 @@ let pageHtml = renderPage('<p class="status">Press to load stable Angular releas
 let releasesViewProvider: AngularReleasesViewProvider | undefined;
 let releasesPanel: vscode.WebviewPanel | undefined;
 let isLoading = false;
-let cachedSupportInfo: Map<number, AngularSupportInfo> | undefined;
-let cachedReleases: AngularRelease[] | undefined;
+let extensionContext: vscode.ExtensionContext | undefined;
 
 type LoadStage = "support-policy" | "npm-registry";
 
 export function activate(context: vscode.ExtensionContext): void {
+	extensionContext = context;
 	releasesViewProvider = new AngularReleasesViewProvider(
 		() => { void refreshReleases(); },
 		() => pageHtml
@@ -55,20 +52,28 @@ async function refreshReleases(): Promise<void> {
 	isLoading = true;
 	let loadStage: LoadStage = "support-policy";
 	try {
-		if (cachedSupportInfo && cachedReleases) {
-			updatePage(renderPage(renderReleaseList(cachedReleases, cachedSupportInfo), undefined, false, false));
-			return;
-		}
-
 		updatePage(renderPage('<p class="status">Loading stable releases...</p>', "Loading...", true));
-		// TEMPORARY PERFORMANCE TESTING: replace with `await fetchAngularSupportInfo()` when removing metrics.
-		//const supportInfo = await requestPerformanceService.measureRequest("Angular support policy", fetchAngularSupportInfo);
-		const supportInfo = await fetchAngularSupportInfo();
+		const context = extensionContext;
+		if (!context) { throw new Error("Angular Radar extension context is unavailable"); }
+		const { supportInfo, isStale: supportInfoIsStale, cacheWarning: supportCacheWarning } = await fetchAngularSupportInfo(context.globalState);
 		loadStage = "npm-registry";
-		const releases = await fetchSupportedAngularReleases(supportInfo);
-		cachedSupportInfo = supportInfo;
-		cachedReleases = releases;
-		updatePage(renderPage(renderReleaseList(releases, supportInfo), undefined, false, false));
+		const { releases, isStale: releasesAreStale, cacheWarning: releaseCacheWarning } = await fetchSupportedAngularReleases(supportInfo, context.globalState);
+		const warnings = [
+			supportInfoIsStale || releasesAreStale
+				? "Showing saved data because an update could not be verified. Check your connection and try again later."
+				: "",
+			supportCacheWarning || releaseCacheWarning
+				? "The local cache could not be read or updated. Data is available now but may need to be downloaded again next time."
+				: ""
+		].filter(Boolean);
+		const warningHtml = warnings.map((warning) => `<p class="status" role="status">${escapeHtml(warning)}</p>`).join("");
+		const showRefreshButton = warnings.length > 0;
+		updatePage(renderPage(
+			`${warningHtml}${renderReleaseList(releases, supportInfo)}`,
+			showRefreshButton ? "Refresh releases" : undefined,
+			false,
+			showRefreshButton
+		));
 	} catch (error: unknown) {
 		const failure = describeLoadFailure(error, loadStage);
 		const diagnostic = failure.diagnostic
@@ -141,4 +146,6 @@ function updatePage(page: string): void {
 	}
 }
 
-export function deactivate(): void {}
+export function deactivate(): void {
+	extensionContext = undefined;
+}

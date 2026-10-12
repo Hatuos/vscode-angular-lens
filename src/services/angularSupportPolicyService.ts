@@ -1,19 +1,44 @@
 import type { AngularSupportInfo } from "../models/angularSupportInfo";
 import { addCalendarMonths, parseSupportEndDate } from "../utils/date";
-import { fetchHttpsText } from "./httpsTextService";
+import type { Memento } from "vscode";
+import { fetchCachedHttpsValue } from "./cachedHttpsTextService";
 
 const angularSupportSourceUrl = "https://raw.githubusercontent.com/angular/angular/main/adev/src/content/reference/releases.md";
 export const angularSupportPolicyUrl = "https://angular.dev/reference/releases#actively-supported-versions";
 
-export async function fetchAngularSupportInfo(): Promise<Map<number, AngularSupportInfo>> {
-	const response = await fetchHttpsText(angularSupportSourceUrl, {
+export async function fetchAngularSupportInfo(storage: Memento): Promise<{ supportInfo: Map<number, AngularSupportInfo>; isStale: boolean; cacheWarning: boolean }> {
+	const result = await fetchCachedHttpsValue(storage, "angularRadar.supportPolicy", angularSupportSourceUrl, {
 		headers: { "User-Agent": "AngularRadar-VSCode-Extension" },
 		maxResponseBytes: 160 * 1024
-	});
-	if (response.statusCode !== 200) {
-		throw new Error(`Angular returned HTTP ${response.statusCode ?? "unknown"}`);
+	}, parseAngularSupportInfo, (supportInfo) => Object.fromEntries(supportInfo), deserializeSupportInfo);
+	return { supportInfo: result.value, isStale: result.isStale, cacheWarning: result.cacheWarning };
+}
+
+function deserializeSupportInfo(value: unknown): Map<number, AngularSupportInfo> {
+	if (!value || typeof value !== "object" || Array.isArray(value)) {
+		throw new Error("Cached Angular support information has an unexpected format");
 	}
-	return parseAngularSupportInfo(response.body);
+	const supportInfo = new Map<number, AngularSupportInfo>();
+	for (const [majorText, info] of Object.entries(value)) {
+		const major = Number(majorText);
+		if (!Number.isInteger(major) || major <= 0 || !isAngularSupportInfo(info)) {
+			throw new Error("Cached Angular support information has an unexpected format");
+		}
+		supportInfo.set(major, info);
+	}
+	if (supportInfo.size === 0) {
+		throw new Error("Cached Angular support information is empty");
+	}
+	return supportInfo;
+}
+
+function isAngularSupportInfo(value: unknown): value is AngularSupportInfo {
+	return typeof value === "object"
+		&& value !== null
+		&& "status" in value && typeof value.status === "string"
+		&& "released" in value && typeof value.released === "string"
+		&& "activeEnds" in value && typeof value.activeEnds === "string"
+		&& "ltsEnds" in value && typeof value.ltsEnds === "string";
 }
 
 /**

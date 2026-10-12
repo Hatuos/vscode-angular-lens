@@ -1,6 +1,6 @@
 import type { AngularRelease } from "../models/angularRelease";
 import type { AngularSupportInfo } from "../models/angularSupportInfo";
-import { requestPerformanceService } from "./requestPerformanceService";
+import type { Memento } from "vscode";
 import { fetchAngularCorePackage } from "./npmRegistryService";
 import { compareReleaseVersions, parseVersion } from "../utils/version";
 
@@ -16,10 +16,9 @@ import { compareReleaseVersions, parseVersion } from "../utils/version";
  * @returns The supported stable releases, ordered by descending version.
  * @throws Error if npm provides no stable versions for the supported major versions.
  */
-export async function fetchSupportedAngularReleases(supportInfo: Map<number, AngularSupportInfo>): Promise<AngularRelease[]> {
-	// TEMPORARY PERFORMANCE TESTING: replace with `await fetchAngularCorePackage()` when removing metrics.
-	//const npmPackage = await requestPerformanceService.measureRequest("npm @angular/core", fetchAngularCorePackage);
-	const npmPackage = await fetchAngularCorePackage();
+export async function fetchSupportedAngularReleases(supportInfo: Map<number, AngularSupportInfo>, storage: Memento): Promise<{ releases: AngularRelease[]; isStale: boolean; cacheWarning: boolean }> {
+	const result = await fetchAngularCorePackage(storage);
+	const npmPackage = result.package;
 	const validMajors = new Set([...supportInfo.keys()]);
 	const supportedMajorPrefixes = [...validMajors].flatMap((major) => [`${major}.`, `v${major}.`]);
 	const highestPatchByMajorMinor = new Map<number, Map<number, AngularRelease>>();
@@ -63,5 +62,9 @@ export async function fetchSupportedAngularReleases(supportInfo: Map<number, Ang
 		releases.push(...[...majorMap.values()].sort((left, right) => compareReleaseVersions(right, left)));
 	}
 
-	return releases.sort((left, right) => compareReleaseVersions(right, left));
+	return {
+		releases: releases.sort((left, right) => compareReleaseVersions(right, left)),
+		isStale: result.isStale,
+		cacheWarning: result.cacheWarning
+	};
 }
