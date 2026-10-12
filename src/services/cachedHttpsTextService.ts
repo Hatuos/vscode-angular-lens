@@ -1,11 +1,8 @@
 import type { Memento } from "vscode";
-import { RemoteResponseError, fetchHttpsText, type HttpsTextOptions } from "./httpsTextService";
+import { RemoteResponseError, fetchHttpsText, type HttpsTextOptions, type HttpsTextResponse } from "./httpsTextService";
 
-//const cacheMaxAgeMs = 12 * 60 * 60 * 1000;
-//const cacheMaxStaleAgeMs = 16 * 60 * 60 * 1000;
-
-const cacheMaxAgeMs = 180000;
-const cacheMaxStaleAgeMs = 300000;
+const cacheMaxAgeMs = 12 * 60 * 60 * 1000;
+const cacheMaxStaleAgeMs = 16 * 60 * 60 * 1000;
 
 const transientNetworkErrorCodes = new Set([
 	"ENOTFOUND", "EAI_AGAIN", "ECONNREFUSED", "ECONNRESET", "ECONNABORTED",
@@ -92,9 +89,12 @@ export async function fetchCachedHttpsValue<T>(
 	if (cachedResponse?.etag) { headers["If-None-Match"] = cachedResponse.etag; }
 	if (cachedResponse?.lastModified) { headers["If-Modified-Since"] = cachedResponse.lastModified; }
 
+	//let response: HttpsTextResponse;
 	let response;
 	try {
 		response = await fetchHttpsText(url, { ...options, headers });
+		//const networkError = Object.assign(new Error("Test error: simulated network failure"), { code: "ECONNRESET" });
+		//response = await Promise.reject<HttpsTextResponse>(networkError);
 	} catch (error: unknown) {
 		if (canUseCachedValue(cachedValue, cacheAgeMs) && isTransientNetworkFailure(error)) {
 			return { value: cachedValue, isStale: true, cacheWarning };

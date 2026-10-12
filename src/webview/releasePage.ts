@@ -462,6 +462,32 @@ export function renderPage(content: string, buttonLabel?: string, disabled = fal
 			color: var(--vscode-errorForeground, #f85149);
 			font-size: 1em;
 		}
+		.notice-panel {
+			margin: 0 0 12px;
+			padding: 10px 12px;
+			border: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
+			border-left: 3px solid var(--vscode-editorWarning-foreground, #cca700);
+			border-radius: 4px;
+			background: var(--vscode-editorWidget-background, var(--vscode-sideBar-background, #1f1f1f));
+		}
+		.notice-title {
+			margin: 0;
+			font-size: 0.95em;
+			font-weight: 600;
+		}
+		.notice-list {
+			display: grid;
+			gap: 5px;
+			margin: 6px 0 0;
+			padding-left: 18px;
+			color: var(--vscode-descriptionForeground, #8b949e);
+			line-height: 1.45;
+		}
+		.notice-separator {
+			margin: 12px 0;
+			border: 0;
+			border-top: 1px solid var(--vscode-panel-border, rgba(255,255,255,0.12));
+		}
 		.error-cause,
 		.error-support-link {
 			margin: 6px 0 0;

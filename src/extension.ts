@@ -66,7 +66,9 @@ async function refreshReleases(): Promise<void> {
 				? "The local cache could not be read or updated. Data is available now but may need to be downloaded again next time."
 				: ""
 		].filter(Boolean);
-		const warningHtml = warnings.map((warning) => `<p class="status" role="status">${escapeHtml(warning)}</p>`).join("");
+		const warningHtml = warnings.length > 0
+			? `<section class="notice-panel" role="status" aria-live="polite"><h2 class="notice-title">Data loaded with warnings</h2><ul class="notice-list">${warnings.map((warning) => `<li>${escapeHtml(warning)}</li>`).join("")}</ul></section><hr class="notice-separator">`
+			: "";
 		const showRefreshButton = warnings.length > 0;
 		updatePage(renderPage(
 			`${warningHtml}${renderReleaseList(releases, supportInfo)}`,
