@@ -8,7 +8,7 @@
     "url": "https://github.com/Hatuos/vscode-angular-radar.git"
   },
   "keywords": ["angular", "releases", "frontend"],
-  "version": "0.1.0",
+  "version": "0.1.1",
   "icon": "media/wizard128.png",
   "scripts": {
     "compile": "tsc -p ./"
