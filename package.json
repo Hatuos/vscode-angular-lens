@@ -8,7 +8,7 @@
     "url": "https://github.com/Hatuos/vscode-angular-lens.git"
   },
   "keywords": ["angular", "releases", "frontend"],
-  "version": "0.1.1",
+  "version": "0.1.2",
   "icon": "media/wizard128.png",
   "scripts": {
     "compile": "tsc -p ./"
