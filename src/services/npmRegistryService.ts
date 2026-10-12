@@ -17,11 +17,11 @@ export interface NpmRegistryCorePackage {
  * the payload is invalid JSON, or the response does not match the expected shape.
  */
 export async function fetchAngularCorePackage(storage: Memento): Promise<{ package: NpmRegistryCorePackage; isStale: boolean; cacheWarning: boolean }> {
-	const result = await fetchCachedHttpsValue(storage, "angularRadar.npmCore", "https://registry.npmjs.org/@angular%2fcore", {
+	const result = await fetchCachedHttpsValue(storage, "angularLens.npmCore", "https://registry.npmjs.org/@angular%2fcore", {
 		headers: {
 			Accept: "application/json",
 			"Accept-Encoding": "gzip",
-			"User-Agent": "AngularRadar-VSCode-Extension"
+			"User-Agent": "AngularLens-VSCode-Extension"
 		},
 		maxResponseBytes: 8 * 1024 * 1024,
 		decompressGzip: true

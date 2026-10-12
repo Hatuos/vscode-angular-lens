@@ -1,8 +1,8 @@
 <p align="center">
-	<img src="https://raw.githubusercontent.com/Hatuos/vscode-angular-radar/main/media/wzang-256.png" width="220" alt="A wizard holding an Angular Radar emblem">
+	<img src="https://raw.githubusercontent.com/Hatuos/vscode-angular-lens/main/media/wzang-256.png" width="220" alt="A wizard holding an Angular Lens emblem">
 </p>
 
-<h1 align="center">Angular Radar</h1>
+<h1 align="center">Angular Lens</h1>
 
 <p align="center">
 	Browse Angular releases and support timelines from the VS Code Activity Bar.
@@ -24,10 +24,10 @@
 
 ## About
 
-Angular Radar is a lightweight VS Code extension for checking stable Angular releases without leaving your editor. It groups versions by supported major and minor release, and links each version to its official GitHub release page.
+Angular Lens is a lightweight VS Code extension for checking stable Angular releases without leaving your editor. It groups versions by supported major and minor release, and links each version to its official GitHub release page.
 
 <p align="center">
-	<img src="https://raw.githubusercontent.com/Hatuos/vscode-angular-radar/main/media/pluginPreview.png" alt="Angular Radar release list">
+	<img src="https://raw.githubusercontent.com/Hatuos/vscode-angular-lens/main/media/pluginPreview.png" alt="Angular Lens release list">
 </p>
 
 ## Features
@@ -40,13 +40,13 @@ Angular Radar is a lightweight VS Code extension for checking stable Angular rel
 
 ## Getting Started
 
-Angular Radar requires VS Code 1.90 or later and an internet connection to retrieve Angular release and support information.
+Angular Lens requires VS Code 1.90 or later and an internet connection to retrieve Angular release and support information.
 
-1. Open **Angular Radar** from the Activity Bar.
+1. Open **Angular Lens** from the Activity Bar.
 2. In the **Releases** view, select **Load stable releases**.
 3. Expand a major version to browse its minor releases and support information.
 
-You can also run **Angular Radar: Open Releases** from the Command Palette to open the release list in an editor tab.
+You can also run **Angular Lens: Open Releases** from the Command Palette to open the release list in an editor tab.
 
 ## Development
 
@@ -65,7 +65,7 @@ Open the project folder in VS Code and press **F5** to launch the Extension Deve
 - Supported versions and support dates: [Angular release policy](https://angular.dev/reference/releases#actively-supported-versions)
 - Release details and notes: [Angular releases on GitHub](https://github.com/angular/angular/releases)
 
-Angular Radar fetches publicly available release and support information from these sources and presents it for convenience; it does not redistribute Angular's source code. Angular Radar is an independent project and is not affiliated with, endorsed by, or sponsored by Google or the Angular team. Angular is a trademark of Google LLC; all trademarks and source materials remain with their respective owners.
+Angular Lens fetches publicly available release and support information from these sources and presents it for convenience; it does not redistribute Angular's source code. Angular Lens is an independent project and is not affiliated with, endorsed by, or sponsored by Google or the Angular team. Angular is a trademark of Google LLC; all trademarks and source materials remain with their respective owners.
 
 ---
 

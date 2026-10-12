@@ -7,8 +7,8 @@ const angularSupportSourceUrl = "https://raw.githubusercontent.com/angular/angul
 export const angularSupportPolicyUrl = "https://angular.dev/reference/releases#actively-supported-versions";
 
 export async function fetchAngularSupportInfo(storage: Memento): Promise<{ supportInfo: Map<number, AngularSupportInfo>; isStale: boolean; cacheWarning: boolean }> {
-	const result = await fetchCachedHttpsValue(storage, "angularRadar.supportPolicy", angularSupportSourceUrl, {
-		headers: { "User-Agent": "AngularRadar-VSCode-Extension" },
+	const result = await fetchCachedHttpsValue(storage, "angularLens.supportPolicy", angularSupportSourceUrl, {
+		headers: { "User-Agent": "AngularLens-VSCode-Extension" },
 		maxResponseBytes: 160 * 1024
 	}, parseAngularSupportInfo, (supportInfo) => Object.fromEntries(supportInfo), deserializeSupportInfo);
 	return { supportInfo: result.value, isStale: result.isStale, cacheWarning: result.cacheWarning };

@@ -20,8 +20,8 @@ export function activate(context: vscode.ExtensionContext): void {
 		() => pageHtml
 	);
 	context.subscriptions.push(
-		vscode.window.registerWebviewViewProvider("angularRadar.releases", releasesViewProvider),
-		vscode.commands.registerCommand("angularRadar.openReleases", openReleasesTab)
+		vscode.window.registerWebviewViewProvider("angularLens.releases", releasesViewProvider),
+		vscode.commands.registerCommand("angularLens.openReleases", openReleasesTab)
 	);
 }
 
@@ -32,8 +32,8 @@ function openReleasesTab(): void {
 	}
 
 	const panel = vscode.window.createWebviewPanel(
-		"angularRadar.releasesEditor",
-		"Angular Radar: Releases",
+		"angularLens.releasesEditor",
+		"Angular Lens: Releases",
 		vscode.ViewColumn.One,
 		{ enableScripts: true }
 	);
@@ -54,7 +54,7 @@ async function refreshReleases(): Promise<void> {
 	try {
 		updatePage(renderPage('<p class="status">Loading stable releases...</p>', "Loading...", true));
 		const context = extensionContext;
-		if (!context) { throw new Error("Angular Radar extension context is unavailable"); }
+		if (!context) { throw new Error("Angular Lens extension context is unavailable"); }
 		const { supportInfo, isStale: supportInfoIsStale, cacheWarning: supportCacheWarning } = await fetchAngularSupportInfo(context.globalState);
 		loadStage = "npm-registry";
 		const { releases, isStale: releasesAreStale, cacheWarning: releaseCacheWarning } = await fetchSupportedAngularReleases(supportInfo, context.globalState);
