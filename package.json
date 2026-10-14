@@ -7,7 +7,17 @@
     "type": "git",
     "url": "https://github.com/Hatuos/vscode-angular-lens.git"
   },
-  "keywords": ["angular", "releases", "frontend"],
+  "categories": ["Visualization", "Other"],
+  "keywords": [
+    "angular",
+    "angular releases",
+    "angular versions",
+    "angular support",
+    "angular lts",
+    "release tracker",
+    "release notes",
+    "support lifecycle"
+  ],
   "version": "0.1.2",
   "icon": "media/wizard128.png",
   "scripts": {
